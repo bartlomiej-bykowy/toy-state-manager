@@ -13,7 +13,7 @@ export type StoreConfig<
   id: string;
   state: () => S;
   getters?: G;
-  actions?: A;
+  actions?: A & ThisType<StoreInstace<S, G, A>>;
 };
 
 export type StoreInstace<
