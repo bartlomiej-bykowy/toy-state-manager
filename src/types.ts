@@ -13,10 +13,10 @@ export type StoreConfig<
   id: string;
   state: () => S;
   getters?: G;
-  actions?: A & ThisType<StoreInstace<S, G, A>>;
+  actions?: A & ThisType<StoreInstance<S, G, A>>;
 };
 
-export type StoreInstace<
+export type StoreInstance<
   S extends State,
   G extends Getters<S>,
   A extends Actions

@@ -1,22 +1,25 @@
-import type { Actions, Getters, State, StoreInstace } from "./types";
+import type { Actions, Getters, State, StoreInstance } from "./types";
 
-const registry = new Map<
-  string,
-  StoreInstace<State, Getters<State>, Actions>
->();
+type AnyStoreInstance = StoreInstance<any, any, any>;
+
+const registry = new Map<string, AnyStoreInstance>();
 
 export function getStore(id: string) {
   return registry.get(id);
 }
 
-export function setStore(store: StoreInstace<State, Getters<State>, Actions>) {
-  registry.set(store.$id, store);
+export function setStore<
+  S extends State,
+  G extends Getters<S>,
+  A extends Actions
+>(store: StoreInstance<S, G, A>): void {
+  registry.set(store.$id, store as AnyStoreInstance);
 }
 
-export function hasStore(id: string) {
+export function hasStore(id: string): boolean {
   return registry.has(id);
 }
 
-export function deleteStore(id: string) {
+export function deleteStore(id: string): boolean {
   return registry.delete(id);
 }
