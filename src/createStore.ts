@@ -21,6 +21,8 @@ export function createStore<
     keyof S,
     Array<(oldValue: any, newValue: any) => void>
   >();
+  const gettersCache = new Map<keyof G, any>();
+  const gettersCacheValid = new Set<keyof G>();
 
   const store = {} as StoreInstance<S, G, A>;
 
@@ -31,7 +33,19 @@ export function createStore<
   if (getters && Object.keys(getters).length) {
     for (const key in getters) {
       const getter = getters[key];
-      (store as any)[key] = getter(store.$state, store);
+
+      Object.defineProperty(store, key, {
+        enumerable: true,
+        get() {
+          if (!gettersCacheValid.has(key)) {
+            const value = getter(store.$state, store);
+            gettersCache.set(key, value);
+            gettersCacheValid.add(key);
+          }
+
+          return gettersCache.get(key);
+        }
+      });
     }
   }
   // ADD ACTIONS
@@ -42,7 +56,6 @@ export function createStore<
     }
   }
   // ADD STORE METHODS
-  // TODO: implement methods
   store.$patch = (partialState: Partial<S>) => {
     for (const key in partialState) {
       if (!(key in store.$state)) {
