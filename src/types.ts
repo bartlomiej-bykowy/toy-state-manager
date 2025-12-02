@@ -25,7 +25,7 @@ export type StoreInstance<
   $state: S;
   $patch: (partialState: Partial<S>) => void;
   $reset: (...args: (keyof S)[]) => void;
-  $subscribe(callback: (presState: S, newState: S) => void): () => void;
+  $subscribe(callback: (prevState: S, newState: S) => void): () => void;
   $subscribeKey<K extends keyof S>(
     key: K,
     callback: (prevValue: S[K], newValue: S[K]) => void
