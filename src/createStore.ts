@@ -16,6 +16,11 @@ export function createStore<
 
   const rawState = state();
   const initialState = cloneDeep(rawState);
+  const globalWatchers: Array<(oldState: S, newState: S) => void> = [];
+  const keyWatchers = new Map<
+    keyof S,
+    Array<(oldValue: any, newValue: any) => void>
+  >();
 
   const store = {} as StoreInstance<S, G, A>;
 
@@ -59,8 +64,31 @@ export function createStore<
       store.$state[key] = cloneDeep(initialState[key]);
     }
   };
-  store.$subscribe = (cb) => () => console.log("path");
-  store.$subscribeKey = (key, cb) => () => console.log("path");
+  store.$subscribe = (cb) => {
+    globalWatchers.push(cb);
+
+    return () => {
+      const idx = globalWatchers.indexOf(cb);
+      if (idx !== -1) globalWatchers.splice(idx, 1);
+    };
+  };
+  store.$subscribeKey = (key, cb) => () => {
+    const arr = keyWatchers.get(key) ?? [];
+    arr.push(cb);
+    keyWatchers.set(key, arr);
+
+    return () => {
+      const arr = keyWatchers.get(key);
+      if (!arr) return;
+
+      const idx = arr.indexOf(cb);
+      if (idx !== -1) arr.splice(idx, 1);
+
+      if (arr.length === 0) {
+        keyWatchers.delete(key);
+      }
+    };
+  };
 
   return store;
 }
