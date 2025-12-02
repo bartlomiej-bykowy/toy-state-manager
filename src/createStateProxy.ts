@@ -1,5 +1,5 @@
 import type { State } from "./types";
-import { deepClone, shallowClone } from "./utils";
+import { cloneDeep, cloneShallow } from "./utils";
 
 export function createStateProxy<S extends State>(
   state: S,
@@ -17,9 +17,9 @@ export function createStateProxy<S extends State>(
       // state is just used to compare values vs new state and it's cheap. New
       // state has to be a deep copy becasue otherwise user could mutate state
       // using it
-      const oldState = shallowClone(target);
+      const oldState = cloneShallow(target);
       target[key as keyof S] = value;
-      const newState = deepClone(target);
+      const newState = cloneDeep(target);
 
       notify(oldState, newState, new Set([key]));
 

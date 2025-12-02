@@ -1,2 +1,2 @@
-export { deepClone } from "./deepClone";
-export { shallowClone } from "./shallowClone";
+export { cloneDeep } from "./cloneDeep";
+export { cloneShallow } from "./cloneShallow";
