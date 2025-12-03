@@ -23,3 +23,7 @@ export function hasStore(id: string): boolean {
 export function deleteStore(id: string): boolean {
   return registry.delete(id);
 }
+
+export function __clearStoreForTests() {
+  registry.clear();
+}
