@@ -31,11 +31,11 @@ To see it in action, check the demo app:
 ## 📦 Installation
 
 ```bash
-npm install @bartlomiej-bykowy/toy-state-manager
+npm install @bartlomiej-bykowy/toy-store
 # or
-pnpm add @bartlomiej-bykowy/toy-state-manager
+pnpm add @bartlomiej-bykowy/toy-store
 # or
-yarn add @bartlomiej-bykowy/toy-state-manager
+yarn add @bartlomiej-bykowy/toy-store
 ```
 
 ---
@@ -45,7 +45,7 @@ yarn add @bartlomiej-bykowy/toy-state-manager
 ### 1. Define a store
 
 ```ts
-import { defineStore } from "@bartlomiej-bykowy/toy-state-manager";
+import { defineStore } from "@bartlomiej-bykowy/toy-store";
 
 type State = { count: number };
 type Getters<S> = {
