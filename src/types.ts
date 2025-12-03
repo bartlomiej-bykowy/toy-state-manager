@@ -3,7 +3,7 @@ export type Getters<S extends State> = Record<
   string,
   (state: S, getters: any) => any
 >;
-export type Actions = Record<string, (...args: any[]) => void | Promise<void>>;
+export type Actions = Record<string, (...args: any[]) => any | Promise<any>>;
 
 export type StoreConfig<
   S extends State,
