@@ -27,5 +27,5 @@ export function createStateProxy<S extends State>(
     }
   });
 
-  return { proxy };
+  return proxy;
 }

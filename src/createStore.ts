@@ -1,3 +1,4 @@
+import { createStateProxy } from "./createStateProxy";
 import type {
   Actions,
   Getters,
@@ -16,6 +17,7 @@ export function createStore<
 
   const rawState = state();
   const initialState = cloneDeep(rawState);
+  const proxyState = cloneDeep(rawState);
   const globalWatchers: Array<(oldState: S, newState: S) => void> = [];
   const keyWatchers = new Map<
     keyof S,
@@ -27,7 +29,29 @@ export function createStore<
   const store = {} as StoreInstance<S, G, A>;
 
   store.$id = id;
-  store.$state = initialState;
+  store.$state = createStateProxy(
+    proxyState,
+    (oldState: S, newState: S, changedKeys: Set<keyof S>) => {
+      gettersCache.clear();
+      // run global watchers
+      for (const watcher of globalWatchers) {
+        watcher(oldState, newState);
+      }
+
+      // run key watchers
+      for (const key of changedKeys) {
+        const watchers = keyWatchers.get(key);
+        if (!watchers) continue;
+
+        const oldValue = oldState[key];
+        const newValue = newState[key];
+
+        for (const watcher of watchers) {
+          watcher(oldValue, newValue);
+        }
+      }
+    }
+  );
 
   // ADD GETTERS AS COMPUTED VALUES
   if (getters && Object.keys(getters).length) {
